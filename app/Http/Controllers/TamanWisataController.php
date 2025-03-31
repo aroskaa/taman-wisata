@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\View\View;
 use App\Models\TamanWisata;
 use Illuminate\Http\Request;
 
@@ -10,9 +11,10 @@ class TamanWisataController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
-        //
+        $tamanWisatas = TamanWisata::with('images')->paginate(10);
+        return view('taman-wisata.index', compact('tamanWisatas'));
     }
 
     /**
@@ -34,9 +36,9 @@ class TamanWisataController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(TamanWisata $tamanWisata)
+    public function show(TamanWisata $tamanWisata): View
     {
-        //
+        return view('taman-wisata.show', compact('tamanWisata'));
     }
 
     /**
