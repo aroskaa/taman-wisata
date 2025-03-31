@@ -8,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use Intervention\Image\Laravel\Facades\Image;
 
 class HeroSliderController extends Controller
 {
@@ -26,7 +25,8 @@ class HeroSliderController extends Controller
      */
     public function create(): View
     {
-        return view('admin.hero-sliders.create');
+        $nextOrder = HeroSlider::max('order') + 1;
+        return view('admin.hero-sliders.create', compact('nextOrder'));
     }
 
     /**
@@ -36,28 +36,24 @@ class HeroSliderController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'required|image|max:2048',
-            'order' => 'nullable|integer',
+            'image_url' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $imagePath = $request->file('image')->store('hero-sliders', 'public');
-        
-        // Resize image
-        $img = Image::read(storage_path('app/public/' . $imagePath));
-        $img->resize(1920, 1080, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-        $img->save();
+        if (!$request->hasFile('image_url')) {
+            return back()->withErrors(['image_url' => 'An image is required.']);
+        }
 
+        $imagePath = $request->file('image_url')->store('hero-sliders', 'public');
+        $nextOrder = HeroSlider::max('order') + 1;
+        
         HeroSlider::create([
             'name' => $request->name,
             'image_url' => $imagePath,
-            'order' => $request->order ?? 0,
+            'order' => $nextOrder
         ]);
 
         return redirect()->route('admin.hero-sliders.index')
-            ->with('success', 'Hero slider created successfully.');
+            ->with('success', 'Hero Slider created successfully.');
     }
 
     /**
@@ -83,34 +79,30 @@ class HeroSliderController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'nullable|image|max:2048',
-            'order' => 'nullable|integer',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        if ($request->hasFile('image')) {
+        $data = [
+            'name' => $request->name
+        ];
+
+        if ($request->hasFile('image_url')) {
             // Delete old image
-            Storage::disk('public')->delete($heroSlider->getRawOriginal('image_url'));
+            if ($heroSlider->image_url) {
+                // Remove 'storage/' prefix from the path
+                $oldPath = str_replace('storage/', '', $heroSlider->image_url);
+                Storage::disk('public')->delete($oldPath);
+            }
             
             // Store new image
-            $imagePath = $request->file('image')->store('hero-sliders', 'public');
-            
-            // Resize image
-            $img = Image::read(storage_path('app/public/' . $imagePath));
-            $img->resize(1920, 1080, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-            $img->save();
-            
-            $heroSlider->image_url = $imagePath;
+            $imagePath = $request->file('image_url')->store('hero-sliders', 'public');
+            $data['image_url'] = $imagePath;
         }
 
-        $heroSlider->name = $request->name;
-        $heroSlider->order = $request->order ?? 0;
-        $heroSlider->save();
+        $heroSlider->update($data);
 
         return redirect()->route('admin.hero-sliders.index')
-            ->with('success', 'Hero slider updated successfully.');
+            ->with('success', 'Hero Slider updated successfully.');
     }
 
     /**
@@ -118,12 +110,13 @@ class HeroSliderController extends Controller
      */
     public function destroy(HeroSlider $heroSlider): RedirectResponse
     {
-        // Delete image
-        Storage::disk('public')->delete($heroSlider->getRawOriginal('image_url'));
+        if ($heroSlider->image_url) {
+            Storage::disk('public')->delete($heroSlider->image_url);
+        }
         
         $heroSlider->delete();
 
         return redirect()->route('admin.hero-sliders.index')
-            ->with('success', 'Hero slider deleted successfully.');
+            ->with('success', 'Hero Slider deleted successfully.');
     }
 }

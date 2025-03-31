@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('taman_wisata_images', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('tempat_wisata_id')->constrained()->onDelete('cascade');
+            $table->foreignUuid('taman_wisata_id')->constrained()->onDelete('cascade');
             $table->string('image_path');
             $table->integer('order')->default(0);
             $table->timestamps();

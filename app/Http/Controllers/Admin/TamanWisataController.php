@@ -33,8 +33,9 @@ class TamanWisataController extends Controller
             'description' => 'required|string',
             'location' => 'required|string|max:255',
             'rating' => 'required|numeric|min:0|max:5',
-            'wa_admin' => 'required|string|max:20',
+            'wa_admin' => 'required|string|min:10|max:13',
             'images.*' => 'required|image|max:2048',
+            'images' => 'required|array|max:7',
         ]);
 
         DB::beginTransaction();
@@ -51,14 +52,6 @@ class TamanWisataController extends Controller
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $index => $image) {
                     $imagePath = $image->store('taman-wisatas', 'public');
-                    
-                    // Resize image
-                    $img = Image::read(storage_path('app/public/' . $imagePath));
-                    $img->resize(800, 600, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                    $img->save();
                     
                     TamanWisataImages::create([
                         'taman_wisata_id' => $tamanWisata->id,
@@ -92,6 +85,7 @@ class TamanWisataController extends Controller
             'rating' => 'required|numeric|min:0|max:5',
             'wa_admin' => 'required|string|max:20',
             'new_images.*' => 'nullable|image|max:2048',
+            'new_images' => 'nullable|array|max:7',
             'delete_images.*' => 'nullable|string',
         ]);
 
@@ -119,19 +113,18 @@ class TamanWisataController extends Controller
 
             // Add new images
             if ($request->hasFile('new_images')) {
+                $currentImageCount = $tamanWisata->images()->count();
+                $newImageCount = count($request->file('new_images'));
+                
+                if ($currentImageCount + $newImageCount > 7) {
+                    return back()->with('error', 'Maximum 7 images allowed')->withInput();
+                }
+                
                 $lastOrder = $tamanWisata->images()->max('order') ?? -1;
                 
                 foreach ($request->file('new_images') as $image) {
                     $lastOrder++;
                     $imagePath = $image->store('taman-wisatas', 'public');
-                    
-                    // Resize image
-                    $img = Image::read(storage_path('app/public/' . $imagePath));
-                    $img->resize(800, 600, function ($constraint) {
-                        $constraint->aspectRatio();
-                        $constraint->upsize();
-                    });
-                    $img->save();
                     
                     TamanWisataImages::create([
                         'taman_wisata_id' => $tamanWisata->id,
@@ -144,7 +137,7 @@ class TamanWisataController extends Controller
             DB::commit();
 
             return redirect()->route('admin.taman-wisatas.index')
-                ->with('success', 'Tempat wisata updated successfully.');
+                ->with('success', 'Taman wisata updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'An error occurred: ' . $e->getMessage())->withInput();

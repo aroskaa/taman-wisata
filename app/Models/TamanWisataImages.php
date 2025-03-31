@@ -14,12 +14,12 @@ class TamanWisataImages extends Model
     use HasFactory, HasUuids;
 
     protected $fillable = [
-        'tempat_wisata_id',
+        'taman_wisata_id',
         'image_path',
         'order',
     ];
 
-    public function tempatWisata(): BelongsTo
+    public function tamanWisata(): BelongsTo
     {
         return $this->belongsTo(TamanWisata::class);
     }

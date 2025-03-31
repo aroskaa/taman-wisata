@@ -1,7 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\HeroSliderController;
+use App\Http\Controllers\Admin\TamanWisataController;
+use App\Http\Controllers\TamanWisataController as ControllersTamanWisataController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -11,10 +15,28 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+// User Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/taman-wisata', [ControllersTamanWisataController::class, 'index'])->name('taman-wisata.index');
+    Route::get('/taman-wisata/{tamanWisata}', [TamanWisataController::class, 'show'])->name('taman-wisata.show');
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // Admin routes - temporarily without admin check
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('dashboard');
+        })->name('dashboard');
+
+        Route::resource('taman-wisatas', TamanWisataController::class);
+        Route::resource('hero-sliders', HeroSliderController::class);
+    });
 });
 
 require __DIR__.'/auth.php';
