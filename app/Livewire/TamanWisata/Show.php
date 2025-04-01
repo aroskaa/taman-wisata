@@ -9,6 +9,7 @@ class Show extends Component
 {
     public TamanWisata $tamanWisata;
     public $activeImage = 0;
+    public $isSliding = true;
 
     public function mount(TamanWisata $tamanWisata)
     {
@@ -18,6 +19,18 @@ class Show extends Component
     public function setActiveImage($index)
     {
         $this->activeImage = $index;
+    }
+
+    public function nextSlide()
+    {
+        if ($this->isSliding && $this->tamanWisata->images->count() > 0) {
+            $this->activeImage = ($this->activeImage + 1) % $this->tamanWisata->images->count();
+        }
+    }
+
+    public function toggleSlideshow()
+    {
+        $this->isSliding = !$this->isSliding;
     }
 
     public function render()

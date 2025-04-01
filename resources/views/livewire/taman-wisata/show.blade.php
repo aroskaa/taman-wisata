@@ -1,19 +1,21 @@
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" wire:poll.5000ms="nextSlide">
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <!-- Image Gallery -->
         <div class="relative h-[60vh]">
             @if($tamanWisata->images->count() > 0)
-                <img 
-                    src="{{ Storage::url($tamanWisata->images[$activeImage]->image_path) }}" 
-                    alt="{{ $tamanWisata->name }}"
-                    class="w-full h-full object-cover"
-                >
+                <div class="relative w-full h-full">
+                    <img 
+                        src="{{ Storage::url($tamanWisata->images[$activeImage]->image_path) }}" 
+                        alt="{{ $tamanWisata->name }}"
+                        class="absolute inset-0 w-full h-full object-cover transform transition-transform duration-500 ease-in-out"
+                    >
+                </div>
                 <!-- Thumbnail Navigation -->
                 <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
                     @foreach($tamanWisata->images as $index => $image)
                         <button 
                             wire:click="setActiveImage({{ $index }})"
-                            class="w-16 h-16 rounded-lg overflow-hidden {{ $activeImage === $index ? 'ring-2 ring-primary' : '' }}"
+                            class="w-16 h-16 rounded-lg overflow-hidden {{ $activeImage === $index ? 'ring-2 ring-primary' : '' }} hover:opacity-75 transition-opacity"
                         >
                             <img 
                                 src="{{ Storage::url($image->image_path) }}" 
@@ -23,6 +25,23 @@
                         </button>
                     @endforeach
                 </div>
+
+                <!-- Slideshow Controls -->
+                <button 
+                    wire:click="toggleSlideshow"
+                    class="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-lg hover:bg-white/90 transition-colors"
+                >
+                    @if($isSliding)
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    @else
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    @endif
+                </button>
             @else
                 <div class="w-full h-full bg-gray-200 flex items-center justify-center">
                     <span class="text-gray-400">No Image</span>
