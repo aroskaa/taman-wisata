@@ -17,8 +17,8 @@ Route::get('/dashboard', function () {
 
 // User Routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/taman-wisata', [ControllersTamanWisataController::class, 'index'])->name('taman-wisata.index');
-    Route::get('/taman-wisata/{tamanWisata}', [TamanWisataController::class, 'show'])->name('taman-wisata.show');
+    Route::get('/taman-wisata', \App\Livewire\TamanWisata\Index::class)->name('taman-wisata.index');
+    Route::get('/taman-wisata/{tamanWisata}', \App\Livewire\TamanWisata\Show::class)->name('taman-wisata.show');
     
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
