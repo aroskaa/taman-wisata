@@ -33,7 +33,7 @@
                                 <div class="text-sm font-medium text-gray-900">{{ $slider->name }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <img src="{{ $slider->image_url }}" alt="{{ $slider->name }}" class="h-12 w-20 object-cover rounded">
+                                <img src="{{ asset('storage/' . $slider->image_url) }}" alt="{{ $slider->name }}" class="h-12 w-20 object-cover rounded">
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">{{ $slider->order }}</div>

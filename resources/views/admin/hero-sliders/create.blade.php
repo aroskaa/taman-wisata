@@ -54,7 +54,7 @@
                             </label>
 
                             <!-- Preview container with fixed width -->
-                            <div id="imagePreview" class="mt-1 flex flex-wrap gap-1 w-32">
+                            <div id="imagePreview" class="mt-2 flex flex-wrap gap-2 w-full max-w-[200px]">
                             </div>
                         </div>
                     </div>
@@ -89,11 +89,11 @@ function showPreview(event) {
         
         reader.onload = function(e) {
             const div = document.createElement('div');
-            div.className = 'relative w-12 h-12';
+            div.className = 'relative w-[200px] h-[200px]';
             
             const img = document.createElement('img');
             img.src = e.target.result;
-            img.className = 'w-full h-full object-contain bg-gray-50 rounded border border-gray-200';
+            img.className = 'w-full h-full object-cover bg-gray-50 rounded border border-gray-200';
             
             div.appendChild(img);
             previewContainer.appendChild(div);

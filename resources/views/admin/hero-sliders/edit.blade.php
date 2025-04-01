@@ -35,8 +35,8 @@
                 <!-- Current Image -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Current Image</label>
-                    <div class="relative w-[15px] h-[15px]">
-                        <img src="{{ $heroSlider->image_url }}" alt="Hero Slider Image" class="w-[15px] h-[15px] object-cover bg-gray-50 rounded border border-gray-200">
+                    <div class="relative w-[200px] h-[200px]">
+                        <img src="{{ asset('storage/' . $heroSlider->image_url) }}" alt="Hero Slider Image" class="w-[200px] h-[200px] object-cover bg-gray-50 rounded border border-gray-200">
                     </div>
                 </div>
 
