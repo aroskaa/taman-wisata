@@ -3,7 +3,9 @@
         <div class="flex justify-between h-16">
             <div class="flex items-center">
                 <!-- Logo -->
-                <a href="/" class="text-xl font-bold">Logo</a>
+                <a href="/" class="text-xl font-bold">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-[60px] h-[60px]">
+                </a>
                 
                 <!-- Nav Links -->
                 <div class="hidden md:flex items-center space-x-8 ml-10">
@@ -17,7 +19,7 @@
             <!-- Search Bar -->
             @unless($hideSearch)
             <div class="flex-1 max-w-lg mx-8 relative">
-                <div class="relative pt-2">
+                <div class="relative pt-2.5">
                     <input 
                         wire:model.live.debounce.300ms="search"
                         wire:keydown.enter="redirectToSearch"
