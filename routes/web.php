@@ -15,6 +15,10 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
 // User Routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/taman-wisata', \App\Livewire\TamanWisata\Index::class)->name('taman-wisata.index');

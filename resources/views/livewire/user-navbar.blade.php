@@ -9,6 +9,9 @@
                 <div class="hidden md:flex items-center space-x-8 ml-10">
                     <a href="{{ route('taman-wisata.index') }}" class="text-gray-700 hover:text-gray-900">Taman Wisata</a>
                 </div>
+                <div class="hidden md:flex items-center space-x-8 ml-10">
+                    <a href="{{ route('about') }}" class="text-gray-700 hover:text-gray-900">About</a>
+                </div>
             </div>
 
             <!-- Search Bar -->
