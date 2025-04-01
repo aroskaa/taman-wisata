@@ -43,12 +43,13 @@ class HeroSliderController extends Controller
             return back()->withErrors(['image_url' => 'An image is required.']);
         }
 
+        // Store only the path, not the full URL
         $imagePath = $request->file('image_url')->store('hero-sliders', 'public');
         $nextOrder = HeroSlider::max('order') + 1;
         
         HeroSlider::create([
             'name' => $request->name,
-            'image_url' => $imagePath,
+            'image_url' => $imagePath, // This will store just the path like 'hero-sliders/filename.jpg'
             'order' => $nextOrder
         ]);
 
