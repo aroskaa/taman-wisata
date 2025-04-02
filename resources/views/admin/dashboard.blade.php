@@ -1,4 +1,3 @@
-{{-- <x-admin-layout> --}}
 @extends('layouts.admin')
 
 @section('title', 'Dashboard')
@@ -112,6 +111,3 @@
     </div>
 
 @endsection 
-
-
-{{-- </x-admin-layout>  --}}
